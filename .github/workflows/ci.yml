@@ -1,0 +1,46 @@
+name: CI - Validação
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20]
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Verificar index.html
+        run: |
+          if [ ! -f "index.html" ]; then
+            echo "Erro: index.html não encontrado!"
+            exit 1
+          fi
+
+      - name: Linter HTML
+        run: |
+          npm install -g htmlhint
+          htmlhint index.html
+
+      - name: Bloquear arquivos > 500KB
+        run: |
+          find . -type f -size +500k -exec echo "Arquivo muito grande: {}" \; -exec false {} +
+
+      - name: Verificar termos proibidos
+        run: |
+          grep -r -i -E "TODO|FIXME|senha|password" . && exit 1 || echo "Nenhum termo proibido encontrado"
+
+      - name: Validar links e imagens
+        run: |
+          npm install -g broken-link-checker
+          blc http://localhost --filter-level 3 --recursive
