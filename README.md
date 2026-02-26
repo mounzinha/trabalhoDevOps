@@ -7,4 +7,4 @@ O site contém minhas habilidades técnicas, projetos e links para redes sociais
 
 ## Deploy
 O site está publicado automaticamente via GitHub Pages.
-Acesse em: https://SEU_USUARIO.github.io/SEU_REPOSITORIO
+Acesse em: https://github.com/mounzinha/trabalhoDevOps
